@@ -114,6 +114,39 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
   /* メモパネルが下からせり上がる */
   #notesPanel { top: auto; bottom: -65vh; right: 0; left: 0; width: 100%; height: 60vh; border-radius: 12px 12px 0 0; z-index: 150; }
   #notesPanel.open { bottom: 0; right: 0; }
+  
+    /* ======== スマホ入力時の特別レイアウト ======== */
+  body.is-typing #topBar,
+  body.is-typing #viewerControls,
+  body.is-typing #drawControls,
+  body.is-typing #notesHeader,
+  body.is-typing .note-title {
+    display: none !important; /* 入力中は不要なボタンやタイトルを隠して画面を確保 */
+  }
+
+  body.is-typing #mainArea {
+    flex-direction: column; /* 縦並びに変更 */
+  }
+
+  body.is-typing #viewer {
+    height: 35vh !important; /* 画面上部35%を画像専用領域に固定 */
+    flex: none;
+  }
+
+  body.is-typing #notesPanel {
+    position: relative; /* 浮かせるのではなく、下に配置 */
+    bottom: auto;
+    height: auto;
+    flex: 1; /* 残りの領域をすべてメモ欄にする */
+    border-radius: 0;
+  }
+
+  body.is-typing .note-textarea {
+    height: 100%;
+    font-size: 16px; /* ※重要: iOSは16px未満の入力欄をタップすると勝手にズームしてしまうため */
+  }
+
+  
 }
 </style>
 </head>
@@ -514,6 +547,30 @@ const readingGuide = document.getElementById('readingGuide'); let isDraggingGuid
 readingGuide.onpointerdown = e => { isDraggingGuide = true; readingGuide.setPointerCapture(e.pointerId); };
 document.addEventListener('pointermove', e => { if (isDraggingGuide) readingGuide.style.left = e.clientX + 'px'; });
 document.addEventListener('pointerup', () => isDraggingGuide = false);
+
+// === スマホでのキーボード入力時のレイアウト最適化 ===
+function enableTypingMode() {
+    if (window.innerWidth <= 768) {
+        document.body.classList.add('is-typing');
+        // 入力開始時に、今見ている画像の中心をキープするように再描画
+        setTimeout(() => viewer.viewport.applyConstraints(), 100);
+    }
+}
+
+function disableTypingMode() {
+    document.body.classList.remove('is-typing');
+    // 入力終了後にスクロール位置をリセット
+    window.scrollTo(0, 0); 
+    document.body.scrollTop = 0;
+}
+
+globalTextarea.addEventListener('focus', enableTypingMode);
+pageTextarea.addEventListener('focus', enableTypingMode);
+
+globalTextarea.addEventListener('blur', disableTypingMode);
+pageTextarea.addEventListener('blur', disableTypingMode);
+
+
 </script>
 </body>
 </html>
