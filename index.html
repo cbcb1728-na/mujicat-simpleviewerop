@@ -549,11 +549,18 @@ function jumpPage(val) { saveNotes(); currentPage = parseInt(val); loadPage(); }
 function prevPage() { if (currentPage > 0) { saveNotes(); currentPage--; loadPage(); } }
 function nextPage() { if (currentPage < images.length - 1) { saveNotes(); currentPage++; loadPage(); } }
 
-// 矢印キー操作 (入力欄以外)
+// 矢印キー操作 (入力欄以外) - 和本仕様＆画像ズレ防止
 document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.key === 'ArrowLeft') prevPage(); else if (e.key === 'ArrowRight') nextPage();
-});
+    
+    if (e.key === 'ArrowLeft') {
+        e.preventDefault(); // OpenSeadragonによる画像の移動を強制ストップ
+        nextPage();         // 左キーで「次へ（左へめくる）」
+    } else if (e.key === 'ArrowRight') {
+        e.preventDefault(); // OpenSeadragonによる画像の移動を強制ストップ
+        prevPage();         // 右キーで「前へ（右へ戻る）」
+    }
+}, true); // 
 
 // ガイド線ドラッグ
 const readingGuide = document.getElementById('readingGuide'); let isDraggingGuide = false;
