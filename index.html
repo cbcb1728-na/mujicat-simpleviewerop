@@ -132,9 +132,9 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
       <button onclick="loadManifest()" class="btn-primary" title="IIIF読込">🌐 <span class="hide-text-mobile">読込</span></button>
     </div>
     <div class="control-group">
-      <button onclick="prevPage()">◀</button>
+      <button onclick="nextPage()">◀</button>
       <select id="pageSelect" onchange="jumpPage(this.value)"></select>
-      <button onclick="nextPage()">▶</button>
+      <button onclick="prevPage()">▶</button>
     </div>
 
   </div>
@@ -467,6 +467,7 @@ document.addEventListener('pointerup', () => isDraggingGuide = false);
 </script>
 </body>
 </html>
+
 
 
 
