@@ -115,17 +115,24 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
   #notesPanel { top: auto; bottom: -65vh; right: 0; left: 0; width: 100%; height: 60vh; border-radius: 12px 12px 0 0; z-index: 150; }
   #notesPanel.open { bottom: 0; right: 0; }
   
-    /* ======== スマホ入力時の特別レイアウト ======== */
+ /* ======== スマホ入力時の特別レイアウト ======== */
   body.is-typing #topBar,
   body.is-typing #viewerControls,
   body.is-typing #drawControls,
   body.is-typing #notesHeader,
-  body.is-typing .note-title {
-    display: none !important; /* 入力中は不要なボタンやタイトルを隠して画面を確保 */
+  body.is-typing .note-title,
+  body.is-typing #noteResizer {
+    display: none !important; /* 不要なUIとリサイズバーを隠す */
+  }
+
+  /* ★ここがポイント：入力していない方のメモ欄を隠して無駄なスクロールを防ぐ */
+  body.is-typing #globalNoteSection:not(:focus-within),
+  body.is-typing #pageNoteSection:not(:focus-within) {
+    display: none !important;
   }
 
   body.is-typing #mainArea {
-    flex-direction: column; /* 縦並びに変更 */
+    flex-direction: column; 
   }
 
   body.is-typing #viewer {
@@ -134,16 +141,22 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
   }
 
   body.is-typing #notesPanel {
-    position: relative; /* 浮かせるのではなく、下に配置 */
-    bottom: auto;
+    position: relative; 
+    bottom: auto; right: auto; left: auto; top: auto;
     height: auto;
-    flex: 1; /* 残りの領域をすべてメモ欄にする */
+    flex: 1; /* 残りの画面すべてをアクティブな入力欄に */
     border-radius: 0;
+    box-shadow: none;
+  }
+
+  body.is-typing #globalNoteSection,
+  body.is-typing #pageNoteSection {
+    height: 100% !important;
   }
 
   body.is-typing .note-textarea {
     height: 100%;
-    font-size: 16px; /* ※重要: iOSは16px未満の入力欄をタップすると勝手にズームしてしまうため */
+    font-size: 16px; /* iOSの勝手なズーム防止 */
   }
 
   
@@ -552,8 +565,12 @@ document.addEventListener('pointerup', () => isDraggingGuide = false);
 function enableTypingMode() {
     if (window.innerWidth <= 768) {
         document.body.classList.add('is-typing');
-        // 入力開始時に、今見ている画像の中心をキープするように再描画
-        setTimeout(() => viewer.viewport.applyConstraints(), 100);
+        // ブラウザの強制スクロールを即座に打ち消す
+        setTimeout(() => {
+            window.scrollTo(0, 0); 
+            document.body.scrollTop = 0;
+            viewer.viewport.applyConstraints();
+        }, 50);
     }
 }
 
