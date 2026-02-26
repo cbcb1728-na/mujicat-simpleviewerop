@@ -1,12 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ムジでも見れる古文書古典籍</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 /* =========================================
@@ -78,7 +76,7 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
 
 /* メモパネル */
 #notesPanel {
-  position: absolute; top: 0; right: -360px; width: 360px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+  position: absolute; top: 0; right: -380px; width: 380px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.2);
   transition: right 0.3s, bottom 0.3s; z-index: 60; display: flex; flex-direction: column;
 }
 #notesPanel.open { right: 0; }
@@ -86,7 +84,7 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
 .note-header-buttons { display: flex; gap: 4px; }
 #globalNoteSection { height: 50%; display: flex; flex-direction: column; flex-shrink: 0; }
 #pageNoteSection { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.note-title { padding: 6px 10px; font-size: 11px; font-weight: bold; color: #555; background: #fafafa; border-bottom: 1px solid #eee; flex-shrink: 0; }
+.note-title { padding: 6px 10px; font-size: 11px; font-weight: bold; color: #555; background: #fafafa; border-bottom: 1px solid #eee; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
 .note-textarea { flex: 1; width: 100%; box-sizing: border-box; resize: none; border: none; padding: 10px; font-size: 14px; line-height: 1.6; outline: none; }
 .resizer-h { height: 8px; background: #e0e0e0; cursor: row-resize; flex-shrink: 0; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; }
 
@@ -96,26 +94,24 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
 .btn-save { font-weight: bold; color: #006600; background: #e6ffe6; border-color: #b3ffb3; }
 .btn-draw { font-weight: bold; color: #d32f2f; border-color: #d32f2f; }
 
-.dl-mobile-btn { display: none; }
-
-/* 保存メニュー（スマホ用） */
-#mobileDlMenu {
-  display: none; position: fixed; background: #fff; 
-  border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
-  z-index: 200; flex-direction: column; width: 160px;
-}
-#mobileDlMenu button { width: 100%; text-align: left; border: none; border-bottom: 1px solid #eee; border-radius: 0; padding: 10px 15px; font-size: 14px; }
-
+/* スマホ・タブレット用 */
 @media (max-width: 768px) {
   #manifestUrl { width: 100px; }
   .right-controls { margin-left: 0; }
-  .dl-pc-btn { display: none !important; }
-  .dl-mobile-btn { display: inline-block !important; }
   .hide-text-mobile { display: none; }
-  #viewerControls { top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); flex-direction: row; border-radius: 20px; padding: 4px 8px; gap: 4px; }
+  
+  /* 画像調整ボタンの小型化＆配置調整 */
+  #viewerControls { 
+    top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); 
+    flex-direction: row; border-radius: 20px; padding: 4px 8px; gap: 4px; 
+  }
   #viewerControls button { width: 28px; height: 28px; font-size: 11px; border-radius: 50%; }
   #viewerControls .v-divider { height: 28px; width: 1px; margin: 0 2px; }
+  
+  /* お絵描きツールバーの配置調整 */
   #drawControls { top: auto; bottom: 70px; } 
+
+  /* メモパネルが下からせり上がる */
   #notesPanel { top: auto; bottom: -65vh; right: 0; left: 0; width: 100%; height: 60vh; border-radius: 12px 12px 0 0; z-index: 150; }
   #notesPanel.open { bottom: 0; right: 0; }
 }
@@ -131,12 +127,11 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
       <input type="text" id="manifestUrl" placeholder="IIIF URL">
       <button onclick="loadManifest()" class="btn-primary" title="IIIF読込">🌐 <span class="hide-text-mobile">読込</span></button>
     </div>
-    <div class="control-group">
-      <button onclick="nextPage()">◀</button>
+    <div class="control-group" style="border-right: none;">
+      <button onclick="prevPage()">◀</button>
       <select id="pageSelect" onchange="jumpPage(this.value)"></select>
-      <button onclick="prevPage()">▶</button>
+      <button onclick="nextPage()">▶</button>
     </div>
-
   </div>
   
   <div class="right-controls">
@@ -163,6 +158,9 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
   </div>
 
   <div id="drawControls">
+    <button onclick="undoDrawing()" title="1つ戻る" style="font-size: 14px;">↩️</button>
+    <button onclick="redoDrawing()" title="1つ進む" style="font-size: 14px;">↪️</button>
+    <div class="v-divider"></div>
     <button onclick="setPenColor('#111', this)" class="color-btn active-color" style="background:#111;"></button>
     <button onclick="setPenColor('#d32f2f', this)" class="color-btn" style="background:#d32f2f;"></button>
     <button onclick="setPenColor('#1976d2', this)" class="color-btn" style="background:#1976d2;"></button>
@@ -171,7 +169,7 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
     <button onclick="setPenWidth(6)" id="btnThick">太</button>
     <div class="v-divider"></div>
     <button onclick="toggleEraser()" id="btnEraser">🧽</button>
-    <button onclick="clearDrawings()">🗑️</button>
+    <button onclick="clearDrawings()" title="このページの線を全て消す">🗑️</button>
   </div>
 
   <div id="viewer"></div>
@@ -181,14 +179,18 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
     <div id="notesHeader">
       <span style="font-weight: bold; font-size: 13px;">📝 メモ</span>
       <div class="note-header-buttons">
-        <button onclick="exportSession()" class="btn-save">💾 作業保存</button>
+        <button onclick="exportSession()" class="btn-save" title="名前を付けて保存">💾 作業保存</button>
         <button onclick="document.getElementById('sessionLoader').click()" class="btn-action">📂 読込</button>
         <input type="file" id="sessionLoader" style="display:none" accept=".json">
+        <button onclick="resetAllData()" class="btn-action" style="color: #d32f2f; border-color: #d32f2f;" title="全てのデータを消去">🗑️ 全削除</button>
         <button onclick="toggleNotes()" style="background:#ffe6e6;">✖ 閉じる</button>
       </div>
     </div>
     <div id="globalNoteSection">
-      <div class="note-title">全体メモ（全ページ共通）</div>
+      <div class="note-title">
+        全体メモ（全ページ共通）
+        <span style="font-weight:normal; font-size:10px; color:#888;">※画像の二次利用は各機関の規約に従ってください</span>
+      </div>
       <textarea id="globalNotesTextarea" class="note-textarea" placeholder="作品全体に関するメモ"></textarea>
     </div>
     <div id="noteResizer" class="resizer-h"></div>
@@ -199,13 +201,32 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
   </div>
 </div>
 
-
-
 <script>
-// 基本設定と状態
+// ==========================================
+// スマホ特有の「ブラウザ全体のズーム」を完全に防止する処理
+// ==========================================
+document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
+document.addEventListener('gestureend', function(e) { e.preventDefault(); });
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(e) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+        if (!e.target.closest('#viewer') && !e.target.closest('#drawCanvas')) {
+            e.preventDefault();
+        }
+    }
+    lastTouchEnd = now;
+}, { passive: false });
+
+// ==========================================
+// 変数と初期化
+// ==========================================
 let images = [], notesData = [], globalNote = "", currentPage = 0;
 let filterState = { contrast: false, invert: false };
 let allDrawings = {}; 
+let redoStack = {}; // 手書きやり直し用スタック
 
 const pSelect = document.getElementById("pageSelect");
 const globalTextarea = document.getElementById("globalNotesTextarea");
@@ -218,8 +239,18 @@ const viewer = OpenSeadragon({
   animationTime: 0.4, gestureSettingsMouse: { clickToZoom: true }, preserveViewport: true, visibilityRatio: 0.5
 });
 
+// === 仮想キーボードによる画面ズレ修正処理 ===
+function resetScrollPosition() { window.scrollTo(0, 0); document.body.scrollTop = 0; }
+globalTextarea.addEventListener('blur', () => setTimeout(resetScrollPosition, 100));
+pageTextarea.addEventListener('blur', () => setTimeout(resetScrollPosition, 100));
+
 // === 各種UI制御 ===
-function toggleNotes() { notesPanel.classList.toggle('open'); }
+function toggleNotes() { 
+    notesPanel.classList.toggle('open'); 
+    if (!notesPanel.classList.contains('open')) {
+        globalTextarea.blur(); pageTextarea.blur(); setTimeout(resetScrollPosition, 100);
+    }
+}
 function toggleGuide() { document.getElementById('readingGuide').classList.toggle('active'); }
 
 // === 手書き機能 ===
@@ -268,9 +299,28 @@ function toggleEraser() {
   document.getElementById("btnEraser").classList.add('active-tool');
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active-color'));
 }
+
+// 戻る (Undo)
+function undoDrawing() {
+  if (!allDrawings[currentPage] || allDrawings[currentPage].length === 0) return;
+  const lastStroke = allDrawings[currentPage].pop();
+  if (!redoStack[currentPage]) redoStack[currentPage] = [];
+  redoStack[currentPage].push(lastStroke);
+  redrawCanvas(); autoSave();
+}
+// 進む (Redo)
+function redoDrawing() {
+  if (!redoStack[currentPage] || redoStack[currentPage].length === 0) return;
+  const restoredStroke = redoStack[currentPage].pop();
+  if (!allDrawings[currentPage]) allDrawings[currentPage] = [];
+  allDrawings[currentPage].push(restoredStroke);
+  redrawCanvas(); autoSave();
+}
+// このページを全消去
 function clearDrawings() {
   if (confirm("このページの手書きメモをすべて消去しますか？")) {
-    allDrawings[currentPage] = []; redrawCanvas(); autoSave();
+    allDrawings[currentPage] = []; redoStack[currentPage] = [];
+    redrawCanvas(); autoSave();
   }
 }
 
@@ -301,6 +351,7 @@ drawCanvas.addEventListener('pointerup', e => {
   isDrawing = false; drawCanvas.releasePointerCapture(e.pointerId);
   if (!allDrawings[currentPage]) allDrawings[currentPage] = [];
   allDrawings[currentPage].push(currentStroke); currentStroke = null;
+  redoStack[currentPage] = []; // 新しく描いたらやり直し履歴はリセット
   autoSave(); redrawCanvas();
 });
 
@@ -347,7 +398,7 @@ function toggleFilter(t) { filterState[t] = !filterState[t]; applyFilters(); }
 function resetFilters() { filterState = { contrast: false, invert: false }; applyFilters(); viewer.viewport.setRotation(0); viewer.viewport.goHome(); }
 function rotate(d) { viewer.viewport.setRotation(viewer.viewport.getRotation() + d); }
 
-// === データ保存・復元（名前を付けて保存対応） ===
+// === データ保存・復元・全削除 ===
 function autoSave() {
     localStorage.setItem("viewer_images", JSON.stringify(images));
     localStorage.setItem("viewer_notes", JSON.stringify(notesData));
@@ -369,29 +420,30 @@ window.addEventListener('DOMContentLoaded', autoLoad);
 function saveNotes() { notesData[currentPage] = pageTextarea.value; globalNote = globalTextarea.value; autoSave(); }
 pageTextarea.oninput = globalTextarea.oninput = saveNotes;
 
-/**
- * 💾 名前を付けて保存
- */
+/** 🗑️ 全削除機能 */
+function resetAllData() {
+  const msg = "【警告】\n読み込んだ画像、手書きメモ、テキストメモを含め、すべての作業データを完全に消去して初期状態に戻しますか？\n（※この操作は取り消せません）";
+  if (confirm(msg)) {
+    images = []; notesData = []; globalNote = ""; allDrawings = {}; redoStack = {}; currentPage = 0;
+    globalTextarea.value = ""; pageTextarea.value = "";
+    viewer.close(); ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+    updatePageInfo(); localStorage.clear();
+    alert("全データを消去しました。新しい作業を始められます。");
+  }
+}
+
+/** 💾 名前を付けて保存 */
 function exportSession() {
     saveNotes();
-    
-    // 日付文字列の作成 (yymmdd)
     const now = new Date();
     const y = String(now.getFullYear()).slice(-2);
     const m = String(now.getMonth() + 1).padStart(2, '0');
     const d = String(now.getDate()).padStart(2, '0');
     const dateStr = y + m + d;
     
-    // プロンプトで名前を尋ねる
     let fileName = prompt("保存するファイル名を入力してください：", `閲覧メモ_${dateStr}`);
-    
-    // キャンセルされた場合は中断
     if (fileName === null) return;
-    
-    // 空欄の場合はデフォルト名を使用
-    if (fileName.trim() === "") {
-        fileName = `閲覧メモ_${dateStr}`;
-    }
+    if (fileName.trim() === "") fileName = `閲覧メモ_${dateStr}`;
     
     const data = { images, notesData, globalNote, currentPage, allDrawings };
     const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
@@ -421,7 +473,7 @@ async function loadManifest() {
         const res = await fetch(url); const json = await res.json();
         let canvases = (json.sequences) ? json.sequences[0].canvases : json.items;
         images = canvases.map(c => c.images ? c.images[0].resource.service['@id'] + '/info.json' : (c.items[0].items[0].body.service[0]['@id'])).filter(Boolean);
-        notesData = new Array(images.length).fill(""); globalNote = ""; globalTextarea.value = ""; currentPage = 0; allDrawings = {};
+        notesData = new Array(images.length).fill(""); globalNote = ""; globalTextarea.value = ""; currentPage = 0; allDrawings = {}; redoStack = {};
         loadPage(); alert("IIIFを読み込みました");
     } catch (e) { alert("読み込み失敗"); }
 }
@@ -429,7 +481,7 @@ async function loadManifest() {
 document.getElementById("localImageLoader").onchange = e => {
     const files = Array.from(e.target.files); if (files.length === 0) return;
     images = files.map(file => URL.createObjectURL(file));
-    notesData = new Array(images.length).fill(""); globalNote = ""; globalTextarea.value = ""; currentPage = 0; allDrawings = {};
+    notesData = new Array(images.length).fill(""); globalNote = ""; globalTextarea.value = ""; currentPage = 0; allDrawings = {}; redoStack = {};
     loadPage(); alert(files.length + "枚の画像を読み込みました！");
 };
 
@@ -451,9 +503,7 @@ function jumpPage(val) { saveNotes(); currentPage = parseInt(val); loadPage(); }
 function prevPage() { if (currentPage > 0) { saveNotes(); currentPage--; loadPage(); } }
 function nextPage() { if (currentPage < images.length - 1) { saveNotes(); currentPage++; loadPage(); } }
 
-
-
-// 矢印キー操作
+// 矢印キー操作 (入力欄以外)
 document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key === 'ArrowLeft') prevPage(); else if (e.key === 'ArrowRight') nextPage();
@@ -467,9 +517,3 @@ document.addEventListener('pointerup', () => isDraggingGuide = false);
 </script>
 </body>
 </html>
-
-
-
-
-
-
