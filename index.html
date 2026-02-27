@@ -161,6 +161,35 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
 
   
 }
+/* =========================================
+   モーダル（ポップアップ）
+========================================= */
+#infoModalOverlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+  background: rgba(0, 0, 0, 0.6); z-index: 2000;
+  display: flex; justify-content: center; align-items: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+#infoModalOverlay.show {
+  opacity: 1; pointer-events: auto;
+}
+#infoModal {
+  background: #fff; width: 90%; max-width: 500px; max-height: 85vh;
+  border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  display: flex; flex-direction: column; padding: 20px; box-sizing: border-box;
+  transform: translateY(20px); transition: transform 0.3s ease;
+}
+#infoModalOverlay.show #infoModal {
+  transform: translateY(0);
+}
+#infoModal h2 { margin: 0 0 15px 0; font-size: 18px; color: var(--accent-color); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+#infoModal h3 { margin: 15px 0 5px 0; font-size: 14px; color: #333; }
+#infoModal .modal-content {
+  overflow-y: auto; font-size: 13px; line-height: 1.6; color: #444; padding-right: 5px;
+}
+#infoModal ul { margin: 5px 0; padding-left: 20px; }
+#infoModal li { margin-bottom: 5px; }
+
 </style>
 </head>
 <body>
@@ -168,6 +197,7 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
 <div id="topBar">
   <div class="left-controls">
     <div class="control-group">
+      <button onclick="showInfoModal()" class="btn-action" title="注意事項">🔰</button>
       <button onclick="document.getElementById('localImageLoader').click()" class="btn-local" title="ローカル画像読込">📁 <span class="hide-text-mobile">ローカル</span></button>
       <input type="file" id="localImageLoader" multiple accept="image/*" style="display:none">
       <input type="text" id="manifestUrl" placeholder="IIIF URL">
@@ -595,6 +625,59 @@ globalTextarea.addEventListener('blur', disableTypingMode);
 pageTextarea.addEventListener('blur', disableTypingMode);
 
 
+// === モーダル（注意事項）の制御 ===
+function showInfoModal() {
+  document.getElementById('infoModalOverlay').classList.add('show');
+}
+function hideInfoModal() {
+  document.getElementById('infoModalOverlay').classList.remove('show');
+}
+
+// 初回アクセスチェック（localStorageを使って判定）
+function checkFirstVisit() {
+  if (!localStorage.getItem('viewer_visited')) {
+    // 初回ならモーダルを表示し、訪問済みフラグを立てる
+    showInfoModal();
+    localStorage.setItem('viewer_visited', 'true');
+  }
+}
+// ページ読み込み完了時に初回チェックを実行
+window.addEventListener('DOMContentLoaded', checkFirstVisit);
+
 </script>
+
+<div id="infoModalOverlay">
+  <div id="infoModal">
+    <h2>🔰 How to use 🔰</h2>
+    <div class="modal-content">
+      <p>このツールは、PCやスマホ、タブレットで気軽に史料を見られればなあと思って作ったものです。素人が作ったものなので、いろいろな粗がありますがご容赦ください。翻刻等の作業を行う場合は<a href="https://cbcb1728-na.github.io/mujicat-simplehonkoku/" target="_blank" rel="noopener noreferrer">こっちがおすすめ</a>。</p>
+      
+      <h3>🦐 できること 🦐</h3>
+      <ul>
+        <li style="margin-bottom: 10px;">
+          <strong>史料の読込：</strong> お手元の画像ファイルや、IIIFマニフェストURLから読み込めます。<br>
+          <span style="font-size: 0.9em; color: #666; display: inline-block; margin-top: 4px;">※本ツールに読み込んだ画像や入力テキストは、すべてお使いのブラウザ内でのみ処理されます。外部サーバーへ送信されることはありませんので、未公開資料でも安心してご利用いただけます。</span>
+        </li>
+        <li><strong>ページめくり：</strong> 画面上のボタン、またはキーボードの矢印キーで操作できます。※ページ送りの方向は縦書きの資料を想定しています。</li>
+        <li><strong>メモ：</strong> 「🖊️」から画像に直接手書きで、「📝」からキーボード打ち込みで、簡単なメモを記録できます。</li>
+        <li><strong>作業保存：</strong> メモや手書きのデータはブラウザに自動保存されます。メモウィンドウ内の「💾 作業保存」でjsonファイルとしてダウンロードし、後で「📂 読込」から再開することも可能です。</li>
+      </ul>
+      
+      <h3>⚠️ 注意 ⚠️</h3>
+      <ul>
+        <li>ブラウザの履歴を消去すると、自動保存されたデータも消えてしまいます。大切なデータはこまめに「💾 作業保存」からDLしてください。</li>
+        <li>本ツールの利用により生じたデータ消失等の損害について、製作者は責任を負いません。また、IIIFから読み込んだ史料の二次利用については、各所蔵機関の利用規約に必ず従ってください。</li>
+        <li>（無いと思いますが…）本ツールのコードの無断複製・改変・自作発言・販売を禁じます。</li>
+      </ul>
+
+      <div style="text-align: right; font-size: 11px; color: #555; margin-top: 20px;">
+        created by Kitno（X：@cbcb1728 ／ <a href="https://wavebox.me/wave/8k6jf713djq1xulp/" target="_blank" rel="noopener noreferrer">Wavebox</a>）
+      </div>
+    </div>
+    
+    <button onclick="hideInfoModal()" class="btn-primary" style="margin-top:15px; width:100%; font-size:14px; padding:8px;">はじめる</button>
+  </div>
+</div>
+
 </body>
 </html>
