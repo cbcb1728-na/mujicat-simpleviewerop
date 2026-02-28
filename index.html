@@ -87,8 +87,40 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
   #viewerControls button { width: 28px; height: 28px; font-size: 11px; border-radius: 50%; }
   #viewerControls .v-divider { height: 28px; width: 1px; margin: 0 2px; }
   
-  /* お絵描きツールバーの配置調整 */
-  #drawControls { top: auto; bottom: 70px; } 
+/* お絵描きツールバーの配置調整	*/
+  #drawControls { 
+    top: auto; 
+    bottom: 70px; 
+    width: max-content;	/
+    max-width: 95vw;	
+    flex-wrap: nowrap;	
+    overflow-x: auto;	
+    justify-content: flex-start; 
+    padding: 6px 10px;	
+    gap: 4px;	
+    border-radius: 30px;
+    -webkit-overflow-scrolling: touch;	
+  }
+  
+  #drawControls::-webkit-scrollbar { display: none; }
+
+  #drawControls button {
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  #drawControls .color-btn {
+    width: 24px; 
+    height: 24px; 
+  }
+  
+  #drawControls .v-divider {
+    margin: 0 2px;
+    flex-shrink: 0;
+  }
   
   /* ======== メモパネルの基本設定 ======== */
   #notesPanel { position: absolute; top: auto; bottom: -65vh; right: 0; left: 0; width: 100%; height: 60vh; border-radius: 12px 12px 0 0; z-index: 150; transition: bottom 0.3s; }
