@@ -4,15 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-62MKPH6237"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-62MKPH6237');
-</script>
-   
+</script>   
+
 <title>ムジでも見れる古文書古典籍</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 
@@ -20,28 +19,15 @@
 /* =========================================
    基本レイアウト・デザイン
 ========================================= */
-:root {
-  --control-bg: #f8f9fa; --border-color: #ddd; --viewer-bg: #1a1a1a; --accent-color: #0056b3;
-}
-html, body {
-  margin: 0; padding: 0; 
-  height: 100vh; height: 100dvh; 
-  width: 100vw; display: flex; flex-direction: column; overflow: hidden;
-  font-family: "Helvetica Neue", Arial, sans-serif; color: #333; 
-  touch-action: none; 
-  overscroll-behavior: none; 
-}
+:root {  --control-bg: #f8f9fa; --border-color: #ddd; --viewer-bg: #1a1a1a; --accent-color: #0056b3;}
+html, body {  margin: 0; padding: 0; height: 100vh; height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; font-family: "Helvetica Neue", Arial, sans-serif; color: #333; touch-action: none; overscroll-behavior: none; }
 button { cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; padding: 4px 8px; font-size: 12px; transition: 0.2s; touch-action: manipulation; }
 button:hover { background: #e9ecef; }
 button:disabled { opacity: 0.6; cursor: not-allowed; }
 button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0 4px rgba(255,193,7,0.5) inset; }
 
 /* コントロールバー */
-#topBar {
-  padding: 4px 8px; background: var(--control-bg); border-bottom: 1px solid var(--border-color);
-  display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; justify-content: flex-start; 
-  z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch;
-}
+#topBar { padding: 4px 8px; background: var(--control-bg); border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: nowrap; gap: 8px; align-items: center; justify-content: flex-start; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch;}
 #topBar::-webkit-scrollbar { display: none; }
 .left-controls, .right-controls { display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
 .right-controls { margin-left: auto; }
@@ -58,37 +44,23 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
 #drawCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; pointer-events: none; touch-action: none; }
 
 /* お絵描きツールバー */
-#drawControls {
-  position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 55;
-  display: none; background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 30px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2); gap: 8px; align-items: center; border: 1px solid #ccc;
-}
+#drawControls { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 55; display: none; background: rgba(255, 255, 255, 0.95); padding: 6px 12px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); gap: 8px; align-items: center; border: 1px solid #ccc;}
 .color-btn { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ddd; padding: 0; }
 .color-btn.active-color { border-color: #333; transform: scale(1.1); }
 .v-divider { height: 20px; width: 1px; background: #ccc; margin: 0 2px; }
 
 /* 読書用ガイド線 */
-#readingGuide {
-  position: absolute; top: 0; left: 50%; width: 3px; height: 100%;
-  background: rgba(220, 53, 69, 0.8); z-index: 999; display: none; cursor: ew-resize; touch-action: none;
-}
+#readingGuide { position: absolute; top: 0; left: 50%; width: 3px; height: 100%; background: rgba(220, 53, 69, 0.8); z-index: 999; display: none; cursor: ew-resize; touch-action: none;}
 #readingGuide::before { content: ""; position: absolute; top: 0; left: -25px; right: -25px; bottom: 0; }
 #readingGuide.active { display: block; }
 
 /* 画像調整ボタン */
-#viewerControls {
-  position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 50;
-  display: flex; flex-direction: column; gap: 4px; background: rgba(255, 255, 255, 0.85);
-  padding: 4px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
+#viewerControls { position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 50; display: flex; flex-direction: column; gap: 4px; background: rgba(255, 255, 255, 0.85); padding: 4px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);}
 #viewerControls button { font-size: 12px; padding: 0; width: 30px; height: 30px; border: 1px solid #aaa; font-weight: bold; }
 #viewerControls .v-divider { height: 1px; width: 100%; background: #aaa; margin: 2px 0; }
 
 /* メモパネル */
-#notesPanel {
-  position: absolute; top: 0; right: -380px; width: 380px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.2);
-  transition: right 0.3s, bottom 0.3s; z-index: 60; display: flex; flex-direction: column;
-}
+#notesPanel { position: absolute; top: 0; right: -380px; width: 380px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.2); transition: right 0.3s, bottom 0.3s; z-index: 60; display: flex; flex-direction: column;}
 #notesPanel.open { right: 0; }
 #notesHeader { padding: 6px 10px; background: #f0f0f0; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 .note-header-buttons { display: flex; gap: 4px; }
@@ -111,21 +83,27 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
   .hide-text-mobile { display: none; }
   
   /* 画像調整ボタンの小型化＆配置調整 */
-  #viewerControls { 
-    top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); 
-    flex-direction: row; border-radius: 20px; padding: 4px 8px; gap: 4px; 
-  }
+  #viewerControls { top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); flex-direction: row; border-radius: 20px; padding: 4px 8px; gap: 4px; }
   #viewerControls button { width: 28px; height: 28px; font-size: 11px; border-radius: 50%; }
   #viewerControls .v-divider { height: 28px; width: 1px; margin: 0 2px; }
   
   /* お絵描きツールバーの配置調整 */
   #drawControls { top: auto; bottom: 70px; } 
-
-  /* メモパネルが下からせり上がる */
-  #notesPanel { top: auto; bottom: -65vh; right: 0; left: 0; width: 100%; height: 60vh; border-radius: 12px 12px 0 0; z-index: 150; }
-  #notesPanel.open { bottom: 0; right: 0; }
   
- /* ======== スマホ入力時の特別レイアウト ======== */
+  /* ======== メモパネルの基本設定 ======== */
+  #notesPanel { position: absolute; top: auto; bottom: -65vh; right: 0; left: 0; width: 100%; height: 60vh; border-radius: 12px 12px 0 0; z-index: 150; transition: bottom 0.3s; }
+  
+  /* ======== メモパネルが開いているときのレイアウト（常に2画面分割） ======== */
+  body.memo-open #mainArea { flex-direction: column; }
+  body.memo-open #viewer { 
+    height: 40vh !important; /* スマホでメモを開いている時は画像を上部40%に固定（重ならない） */
+    flex: none; 
+  }
+  body.memo-open #notesPanel { 
+    position: relative; bottom: auto; height: 60vh; border-radius: 0; box-shadow: none; flex: 1;
+  }
+
+  /* ======== スマホ入力時（キーボードが出たとき）の特別レイアウト ======== */
   body.is-typing #topBar,
   body.is-typing #viewerControls,
   body.is-typing #drawControls,
@@ -135,28 +113,10 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
     display: none !important; /* 不要なUIとリサイズバーを隠す */
   }
 
-  /* ★ここがポイント：入力していない方のメモ欄を隠して無駄なスクロールを防ぐ */
+  /* 入力していない方のメモ欄を隠して無駄なスクロールを防ぐ */
   body.is-typing #globalNoteSection:not(:focus-within),
   body.is-typing #pageNoteSection:not(:focus-within) {
     display: none !important;
-  }
-
-  body.is-typing #mainArea {
-    flex-direction: column; 
-  }
-
-  body.is-typing #viewer {
-    height: 35vh !important; /* 画面上部35%を画像専用領域に固定 */
-    flex: none;
-  }
-
-  body.is-typing #notesPanel {
-    position: relative; 
-    bottom: auto; right: auto; left: auto; top: auto;
-    height: auto;
-    flex: 1; /* 残りの画面すべてをアクティブな入力欄に */
-    border-radius: 0;
-    box-shadow: none;
   }
 
   body.is-typing #globalNoteSection,
@@ -168,38 +128,20 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
     height: 100%;
     font-size: 16px; /* iOSの勝手なズーム防止 */
   }
-
-  
 }
+
 /* =========================================
    モーダル（ポップアップ）
 ========================================= */
-#infoModalOverlay {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
-  background: rgba(0, 0, 0, 0.6); z-index: 2000;
-  display: flex; justify-content: center; align-items: center;
-  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-}
-#infoModalOverlay.show {
-  opacity: 1; pointer-events: auto;
-}
-#infoModal {
-  background: #fff; width: 90%; max-width: 500px; max-height: 85vh;
-  border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  display: flex; flex-direction: column; padding: 20px; box-sizing: border-box;
-  transform: translateY(20px); transition: transform 0.3s ease;
-}
-#infoModalOverlay.show #infoModal {
-  transform: translateY(0);
-}
+#infoModalOverlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; background: rgba(0, 0, 0, 0.6); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;}
+#infoModalOverlay.show { opacity: 1; pointer-events: auto;}
+#infoModal { background: #fff; width: 90%; max-width: 500px; max-height: 85vh; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; padding: 20px; box-sizing: border-box; transform: translateY(20px); transition: transform 0.3s ease;}
+#infoModalOverlay.show #infoModal { transform: translateY(0);}
 #infoModal h2 { margin: 0 0 15px 0; font-size: 18px; color: var(--accent-color); text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 #infoModal h3 { margin: 15px 0 5px 0; font-size: 14px; color: #333; }
-#infoModal .modal-content {
-  overflow-y: auto; font-size: 13px; line-height: 1.6; color: #444; padding-right: 5px;
-}
+#infoModal .modal-content { overflow-y: auto; font-size: 13px; line-height: 1.6; color: #444; padding-right: 5px;}
 #infoModal ul { margin: 5px 0; padding-left: 20px; }
 #infoModal li { margin-bottom: 5px; }
-
 </style>
 </head>
 <body>
@@ -218,8 +160,7 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
       <select id="pageSelect" onchange="jumpPage(this.value)"></select>
       <button onclick="prevPage()">▶</button>
     </div>
-  </div>
-  
+  </div>  
   <div class="right-controls">
     <div class="control-group">
       <button onclick="toggleDrawMode()" id="btnDrawToggle" class="btn-draw">🖊️ <span class="hide-text-mobile">手書き</span></button>
@@ -251,7 +192,8 @@ button.active-tool { background: #ffeeba; border-color: #ffc107; box-shadow: 0 0
     <button onclick="setPenColor('#d32f2f', this)" class="color-btn" style="background:#d32f2f;"></button>
     <button onclick="setPenColor('#1976d2', this)" class="color-btn" style="background:#1976d2;"></button>
     <div class="v-divider"></div>
-    <button onclick="setPenWidth(2)" id="btnThin" class="active-tool">細</button>
+    <button onclick="setPenWidth(1)" id="btnThin">細</button>
+    <button onclick="setPenWidth(2)" id="btnMedium" class="active-tool">中</button>
     <button onclick="setPenWidth(6)" id="btnThick">太</button>
     <div class="v-divider"></div>
     <button onclick="toggleEraser()" id="btnEraser">🧽</button>
@@ -311,8 +253,7 @@ document.addEventListener('touchend', function(e) {
 // ==========================================
 let images = [], notesData = [], globalNote = "", currentPage = 0;
 let filterState = { contrast: false, invert: false };
-let allDrawings = {}; 
-let redoStack = {}; // 手書きやり直し用スタック
+let allDrawings = {}; let redoStack = {}; // 手書きやり直し用スタック
 
 const pSelect = document.getElementById("pageSelect");
 const globalTextarea = document.getElementById("globalNotesTextarea");
@@ -321,9 +262,27 @@ const notesPanel = document.getElementById("notesPanel");
 
 const viewer = OpenSeadragon({
   id: "viewer", prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
-  showNavigator: false, 
-  animationTime: 0.4, gestureSettingsMouse: { clickToZoom: true }, preserveViewport: true, visibilityRatio: 0.5
+  showNavigator: false, animationTime: 0.4, gestureSettingsMouse: { clickToZoom: true }, preserveViewport: true, visibilityRatio: 0.5
 });
+
+// === 画像のズームと位置をキープする魔法のコード ===
+let savedZoom = null;
+let savedCenter = null;
+
+function saveViewerState() {
+    if (viewer && viewer.viewport) {
+        savedZoom = viewer.viewport.getZoom();
+        savedCenter = viewer.viewport.getCenter();
+    }
+}
+
+function restoreViewerState() {
+    if (viewer && viewer.viewport && savedZoom && savedCenter) {
+        viewer.viewport.zoomTo(savedZoom, null, true);
+        viewer.viewport.panTo(savedCenter, true);
+        viewer.viewport.applyConstraints();
+    }
+}
 
 // === 仮想キーボードによる画面ズレ修正処理 ===
 function resetScrollPosition() { window.scrollTo(0, 0); document.body.scrollTop = 0; }
@@ -332,9 +291,23 @@ pageTextarea.addEventListener('blur', () => setTimeout(resetScrollPosition, 100)
 
 // === 各種UI制御 ===
 function toggleNotes() { 
+    saveViewerState(); // サイズ変更前の状態を保存
     notesPanel.classList.toggle('open'); 
+    
+    // スマホ用の2画面分割クラスの切り替え
+    if (window.innerWidth <= 768) {
+        if (notesPanel.classList.contains('open')) {
+            document.body.classList.add('memo-open');
+        } else {
+            document.body.classList.remove('memo-open');
+        }
+    }
+
+    setTimeout(restoreViewerState, 50); // レイアウト変更後に状態を復元
+
     if (!notesPanel.classList.contains('open')) {
-        globalTextarea.blur(); pageTextarea.blur(); setTimeout(resetScrollPosition, 100);
+        globalTextarea.blur(); pageTextarea.blur(); 
+        setTimeout(resetScrollPosition, 100);
     }
 }
 function toggleGuide() { document.getElementById('readingGuide').classList.toggle('active'); }
@@ -343,7 +316,7 @@ function toggleGuide() { document.getElementById('readingGuide').classList.toggl
 const drawCanvas = document.getElementById("drawCanvas");
 const ctx = drawCanvas.getContext("2d");
 let isDrawMode = false, isDrawing = false;
-let penColor = "#111", penWidth = 2, isEraser = false;
+let penColor = "#111", penWidth = 2, isEraser = false; // 初期値は2(中)
 let currentStroke = null;
 
 function resizeCanvas() {
@@ -375,11 +348,18 @@ function setPenColor(color, btnEl) {
   document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active-color'));
   if(btnEl) btnEl.classList.add('active-color');
 }
+
+// ★ペンの細さを変更する処理（3段階に対応）
 function setPenWidth(w) {
   penWidth = w;
-  document.getElementById("btnThin").classList.toggle('active-tool', w === 2);
-  document.getElementById("btnThick").classList.toggle('active-tool', w === 6);
+  const btnThin = document.getElementById("btnThin");
+  const btnMedium = document.getElementById("btnMedium");
+  const btnThick = document.getElementById("btnThick");
+  if(btnThin) btnThin.classList.toggle('active-tool', w === 1);
+  if(btnMedium) btnMedium.classList.toggle('active-tool', w === 2);
+  if(btnThick) btnThick.classList.toggle('active-tool', w === 6);
 }
+
 function toggleEraser() {
   isEraser = true;
   document.getElementById("btnEraser").classList.add('active-tool');
@@ -589,18 +569,12 @@ function jumpPage(val) { saveNotes(); currentPage = parseInt(val); loadPage(); }
 function prevPage() { if (currentPage > 0) { saveNotes(); currentPage--; loadPage(); } }
 function nextPage() { if (currentPage < images.length - 1) { saveNotes(); currentPage++; loadPage(); } }
 
-// 矢印キー操作 (入力欄以外) - 和本仕様＆画像ズレ防止
+// 矢印キー操作 (入力欄以外)
 document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    
-    if (e.key === 'ArrowLeft') {
-        e.preventDefault(); // OpenSeadragonによる画像の移動を強制ストップ
-        nextPage();         // 左キーで「次へ（左へめくる）」
-    } else if (e.key === 'ArrowRight') {
-        e.preventDefault(); // OpenSeadragonによる画像の移動を強制ストップ
-        prevPage();         // 右キーで「前へ（右へ戻る）」
-    }
-}, true); // 
+    if (e.key === 'ArrowLeft') { e.preventDefault(); nextPage(); } 
+    else if (e.key === 'ArrowRight') { e.preventDefault(); prevPage(); }
+}, true);
 
 // ガイド線ドラッグ
 const readingGuide = document.getElementById('readingGuide'); let isDraggingGuide = false;
@@ -611,21 +585,26 @@ document.addEventListener('pointerup', () => isDraggingGuide = false);
 // === スマホでのキーボード入力時のレイアウト最適化 ===
 function enableTypingMode() {
     if (window.innerWidth <= 768) {
+        saveViewerState(); // ★追加：キーボードが出る前の画像の場所を記憶
         document.body.classList.add('is-typing');
-        // ブラウザの強制スクロールを即座に打ち消す
         setTimeout(() => {
             window.scrollTo(0, 0); 
             document.body.scrollTop = 0;
-            viewer.viewport.applyConstraints();
+            restoreViewerState(); // ★追加：画像の場所を復元
         }, 50);
     }
 }
 
 function disableTypingMode() {
-    document.body.classList.remove('is-typing');
-    // 入力終了後にスクロール位置をリセット
-    window.scrollTo(0, 0); 
-    document.body.scrollTop = 0;
+    if (window.innerWidth <= 768) {
+        saveViewerState(); // ★追加
+        document.body.classList.remove('is-typing');
+        setTimeout(() => {
+            window.scrollTo(0, 0); 
+            document.body.scrollTop = 0;
+            restoreViewerState(); // ★追加
+        }, 50);
+    }
 }
 
 globalTextarea.addEventListener('focus', enableTypingMode);
@@ -634,26 +613,17 @@ pageTextarea.addEventListener('focus', enableTypingMode);
 globalTextarea.addEventListener('blur', disableTypingMode);
 pageTextarea.addEventListener('blur', disableTypingMode);
 
-
 // === モーダル（注意事項）の制御 ===
-function showInfoModal() {
-  document.getElementById('infoModalOverlay').classList.add('show');
-}
-function hideInfoModal() {
-  document.getElementById('infoModalOverlay').classList.remove('show');
-}
+function showInfoModal() { document.getElementById('infoModalOverlay').classList.add('show'); }
+function hideInfoModal() { document.getElementById('infoModalOverlay').classList.remove('show'); }
 
-// 初回アクセスチェック（localStorageを使って判定）
 function checkFirstVisit() {
   if (!localStorage.getItem('viewer_visited')) {
-    // 初回ならモーダルを表示し、訪問済みフラグを立てる
     showInfoModal();
     localStorage.setItem('viewer_visited', 'true');
   }
 }
-// ページ読み込み完了時に初回チェックを実行
 window.addEventListener('DOMContentLoaded', checkFirstVisit);
-
 </script>
 
 <div id="infoModalOverlay">
@@ -679,16 +649,13 @@ window.addEventListener('DOMContentLoaded', checkFirstVisit);
         <li>本ツールの利用により生じたデータ消失等の損害について、製作者は責任を負いません。また、IIIFから読み込んだ史料の二次利用については、各所蔵機関の利用規約に必ず従ってください。</li>
         <li>（無いと思いますが…）本ツールのコードの無断複製・改変・自作発言・販売を禁じます。ツールURLの共有はどんどんしてもらって大丈夫です。</li>
       </ul>
-
-
     </div>
     
     <button onclick="hideInfoModal()" class="btn-primary" style="margin-top:15px; width:100%; font-size:14px; padding:8px;">はじめる</button>
-           <div style="text-align: right; font-size: 11px; color: #555; margin-top: 20px;">
+    <div style="text-align: right; font-size: 11px; color: #555; margin-top: 20px;">
         created by Kitno（X：@cbcb1728 ／ <a href="https://wavebox.me/wave/8k6jf713djq1xulp/" target="_blank" rel="noopener noreferrer">Wavebox</a>）
-      </div>
+    </div>
   </div>
 </div>
-
 </body>
 </html>
