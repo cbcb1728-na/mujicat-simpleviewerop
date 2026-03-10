@@ -1,0 +1,21 @@
+﻿{
+  "name": "ムジでも見れる古文書古典籍",
+  "short_name": "古文書ビューア",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#f8f9fa",
+  "description": "スマホでも手軽に古文書や古典籍を閲覧・メモできるツール",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
