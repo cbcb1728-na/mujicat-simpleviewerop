@@ -1,6 +1,6 @@
 ﻿{
   "name": "ムジでも見れる古文書古典籍",
-  "short_name": "古文書ビューア",
+  "short_name": "古文書ムジ",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f8f9fa",
@@ -18,4 +18,5 @@
       "type": "image/png"
     }
   ]
+
 }
